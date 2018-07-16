@@ -1,13 +1,170 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-  <title>Express</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="vue.js"></script>
+  <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+  <title>KOL Library</title>
 </head>
-
 <body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
+  <div class="flex-c">
+    <div class="wrapper">
+      <div id="app">
+        <div class="flex-h">
+          <div style="position: relative; width: 855px; margin-right: 10px;" class="section">
+            <div style="padding-bottom: 20px;">
+              <button class="primary">添加</button>
+              <div style="display: inline-block;">
+                <input type="text" placeholder="名称" v-model.trim="searchName">
+                <select v-model="searchType">
+                  <option value="">所有类型</option>
+                  <option value="1">网红</option>
+                  <option value="2">明星</option>
+                  <option value="3">大V</option>
+                </select>
+                <select v-model="searchCategory">
+                  <option value="">所有分类</option>
+                  <option value="1">才艺搞笑</option>
+                  <option value="2">文化乐活</option>
+                  <option value="3">美颜打扮</option>
+                  <option value="4">游戏电竞</option>
+                </select>
+                <select v-model="searchValidity">
+                  <option disabled value="">有效性</option>
+                  <option value="true">有效</option>
+                  <option value="false">无效</option>
+                </select>
+                <button class="primary" @click="search">查询</button>
+                <button class="primary" @click="reset">重置</button>
+                <span>|</span>
+                <button disabled>导出</button>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr style="border: 2px solid #696969;">
+                  <th style="width: 40px;" scope="col">#</th>
+                  <th style="width: 180px;" scope="col">名称</th>
+                  <th style="width: 40px;" scope="col">类型</th>
+                  <th style="width: 80px;" scope="col">分类</th>
+                  <th scope="col">简介</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) of searchResult.docs" :class="{focus: index == foucusIndex}" @click="changeFocus" :key="item._id" :data-index="index">
+                  <td>{{index + searchResult.skip + 1}}</td>
+                  <td>{{item.name}}</td>
+                  <td>{{types[item.type - 1]}}</td>
+                  <td>{{categories[item.category - 1]}}</td>
+                  <td>{{item.summary}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="position: absolute; bottom: 20px; width: 100%;">
+              <div class="flex-h">
+                <button :disabled="previousStatus" @click="previousPage">上一页</button>
+                <span style="padding: 0 20px; font-size: 12px;">{{searchPage}} / {{pagesNum}} / {{searchResult.num}}</span>
+                <button :disabled="nextStatus" @click="nextPage">下一页</button>
+                <span style="padding: 0 4px;">|</span>
+                <input type="number" style="width: 60px; margin-right: 4px;" placeholder="页数" min="1" :max="pagesNum" v-model="jumpPage">
+                <button @click="jumpToPage">跳转</button>
+              </div>
+            </div>
+          </div>
+          <div style="width: 295px" class="section">
+            <ul>
+              <li>编号: {{focusItem._id}}</li>
+              <li>名称: {{focusItem.name}}</li>
+              <li>类型: {{types[focusItem.type]}}</li>
+              <li>分类: {{categories[focusItem.category]}}</li>
+              <li>简介: {{focusItem.summary}}</li>
+              <li>有效性: {{focusItem.is_valid ? "有效" : "无效"}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
-
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+      types: ['网红', '明星', '大V'],
+      categories: ['才艺搞笑', '文化乐活', '美颜装扮', '游戏电竞'],
+      searchName: '',
+      searchType: '',
+      searchCategory: '',
+      searchValidity: true,
+      searchPage: 1,
+      searchResult: [],
+      jumpPage: null,
+      foucusIndex: 0,
+      focusItem: {}
+    },
+    computed : {
+      searchSkip: function () {
+        return (this.searchPage -1 ) * 10;
+      },
+      previousStatus: function () {
+        return this.searchPage == 1;
+      },
+      nextStatus: function () {
+        return this.searchPage == this.pagesNum;
+      },
+      pagesNum: function () {
+        return Math.ceil(this.searchResult.num / 10);
+      }
+    },
+    methods: {
+      search: function () {
+        const url = `data?name=${this.searchName}&type=${this.searchType}&category=${this.searchCategory}&is_valid=${this.searchValidity}&skip=${this.searchSkip}`;
+        
+        axios
+          .get(url)
+          .then(function (response) {
+            this.searchResult = response.data;
+            this.focusItem = this.searchResult.docs[0];
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      reset: function () {
+        this.searchName = '';
+        this.searchType = '';
+        this.searchCategory = '';
+        this.searchValidity = true;
+        this.searchPage = 1;
+        this.search();
+      },
+      previousPage: function () {
+        this.searchPage -= 1;
+        this.search();
+        this.foucusIndex = 0;
+      },
+      nextPage: function () {
+        this.searchPage += 1;
+        this.search();
+        this.foucusIndex = 0;
+      },
+      jumpToPage: function () {
+        this.searchPage = parseInt(this.jumpPage);
+        this.search();
+        this.jumpPage = null;
+        this.foucusIndex = 0;
+      },
+      changeFocus: function (e) {
+        this.foucusIndex = parseInt(e.target.parentNode.dataset['index']);
+        this.focusItem = this.searchResult.docs[this.foucusIndex];
+      }
+    },
+    mounted: function () {
+      this.search();
+    }
+  });
+</script>
 </html>
