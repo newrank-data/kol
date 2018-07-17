@@ -14,7 +14,7 @@
     <div class="wrapper">
       <div id="app">
         <div class="flex-h">
-          <div style="position: relative; width: 855px; margin-right: 10px;" class="section">
+          <div style="position: relative; width: 825px; margin-right: 10px;" class="section">
             <div style="padding-bottom: 20px;">
               <button class="primary">添加</button>
               <div style="display: inline-block;">
@@ -74,14 +74,102 @@
               </div>
             </div>
           </div>
-          <div style="width: 295px" class="section">
+          <div style="width: 325px" class="section">
             <ul>
-              <li>编号: {{focusItem._id}}</li>
-              <li>名称: {{focusItem.name}}</li>
-              <li>类型: {{types[focusItem.type]}}</li>
-              <li>分类: {{categories[focusItem.category]}}</li>
-              <li>简介: {{focusItem.summary}}</li>
-              <li>有效性: {{focusItem.is_valid ? "有效" : "无效"}}</li>
+              <li><label>编号: </label>{{focusItem._id}}</li>
+              <li><label>名称: </label>{{focusItem.name}}</li>
+              <li><label>类型: </label>{{types[focusItem.type - 1]}}</li>
+              <li><label>分类: </label>{{categories[focusItem.category - 1]}}</li>
+              <li><label>简介: </label>{{focusItem.summary}}</li>
+              <li><label>有效性: </label>{{focusItem.is_valid ? "有效" : "无效"}}</li>
+            </ul>
+            <hr>
+            <ul>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.weibo">
+                <label>微博：</label>
+                <a v-if="focusItem.accounts.weibo.uid" :href="'https://weibo.com/' + focusItem.accounts.weibo.uid" target="_blank">{{focusItem.accounts.weibo.uid}}</a>
+                <a v-else>空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.weixin">
+                <label>微信：</label>
+                <a v-if="focusItem.accounts.weixin.uid" :href="'https://weixin.sogou.com/weixin?type=1&query=' + focusItem.accounts.weixin.uid" target="_blank">{{focusItem.accounts.weixin.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.youku">
+                <label>优酷：</label>
+                <a v-if="focusItem.accounts.youku.uid" :href="'https://i.youku.com/u/' + focusItem.accounts.youku.uid" target="_blank">{{focusItem.accounts.youku.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.qqvideo">
+                <label>腾讯视频：</label>
+                <a v-if="focusItem.accounts.qqvideo.uid" :href="'https://v.qq.com/vplus/' + focusItem.accounts.qqvideo.uid" target="_blank">{{focusItem.accounts.qqvideo.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.iqiyi">
+                <label>爱奇艺：</label>
+                <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.iqiyi">
+                <label>搜狐视频：</label>
+                <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.bilibili">
+                <label>哔哩哔哩：</label>
+                <a v-if="focusItem.accounts.bilibili.uid" :href="'https://space.bilibili.com/' + focusItem.accounts.bilibili.uid" target="_blank">{{focusItem.accounts.bilibili.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.miaopai">
+                <label>秒拍：</label>
+                <a v-if="focusItem.accounts.miaopai.uid" :href="'http://www.miaopai.com/u/' + focusItem.accounts.miaopai.uid" target="_blank">{{focusItem.accounts.miaopai.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.meipai">
+                <label>美拍：</label>
+                <a v-if="focusItem.accounts.meipai.uid" :href="'https://www.meipai.com/user/' + focusItem.accounts.meipai.uid" target="_blank">{{focusItem.accounts.meipai.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.yy">
+                <label>YY：</label>
+                <a v-if="focusItem.accounts.yy.uid" :href="'https://www.yy.com/u/' + focusItem.accounts.yy.uid" target="_blank">{{focusItem.accounts.yy.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.douyu">
+                <label>斗鱼：</label>
+                <a v-if="focusItem.accounts.douyu.uid" :href="'https://www.douyu.com/' + focusItem.accounts.douyu.uid" target="_blank">{{focusItem.accounts.douyu.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.huya">
+                <label>虎牙：</label>
+                <a v-if="focusItem.accounts.huya.uid" :href="'https://v.huya.com/u/' + focusItem.accounts.huya.uid" target="_blank">{{focusItem.accounts.huya.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.huajiao">
+                <label>花椒：</label>
+                <a v-if="focusItem.accounts.huajiao.uid" :href="'https://www.huajiao.com/user/' + focusItem.accounts.huajiao.uid" target="_blank">{{focusItem.accounts.huajiao.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.yizhibo">
+                <label>一直播：</label>
+                <a v-if="focusItem.accounts.yizhibo.uid" :href="'https://www.yizhibo.com/member/personel/user_info?memberid=' + focusItem.accounts.yizhibo.uid" target="_blank">{{focusItem.accounts.yizhibo.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.inke">
+                <label>映客：</label>
+                <a v-if="focusItem.accounts.inke.uid" :href="'http://www.inke.com/live.html?uid=' + focusItem.accounts.inke.uid" target="_blank">{{focusItem.accounts.inke.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.panda">
+                <label>熊猫：</label>
+                <a v-if="focusItem.accounts.panda.uid" :href="'https://www.panda.tv/' + focusItem.accounts.panda.uid" target="_blank">{{focusItem.accounts.panda.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
+              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.longzhu">
+                <label>龙珠：</label>
+                <a v-if="focusItem.accounts.longzhu.uid" :href="'https://star.longzhu.com/' + focusItem.accounts.longzhu.uid" target="_blank">{{focusItem.accounts.longzhu.uid}}</a>
+                <a v-else href="">空</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -128,6 +216,7 @@
           .then(function (response) {
             this.searchResult = response.data;
             this.focusItem = this.searchResult.docs[0];
+            this.foucusIndex = 0;
           }.bind(this))
           .catch(function (error) {
             console.log(error);
@@ -140,6 +229,7 @@
         this.searchValidity = true;
         this.searchPage = 1;
         this.search();
+        this.foucusIndex = 0;
       },
       previousPage: function () {
         this.searchPage -= 1;

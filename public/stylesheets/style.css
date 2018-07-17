@@ -49,7 +49,7 @@ input {
 }
 
 select, button {
-  width: 82px;
+  width: 78px;
 }
 
 
@@ -59,7 +59,7 @@ button.primary {
 }
 
 table {
-  width: 815px;
+  width: 785px;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -99,4 +99,14 @@ td {
 ul, li {
   list-style-type: none;
   padding: 4px 0;
+  font-size: 12px;
+}
+
+label {
+  color: #696969;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px dashed #d2d2d2;
 }
