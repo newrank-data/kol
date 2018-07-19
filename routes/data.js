@@ -4,11 +4,10 @@ const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB = process.env.MONGODB_DB;
 
 router.get('/', (req, res) => {
   
-  MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, (err, client) => {
+  MongoClient.connect(MONGODB_URI, (err, db) => {
 
     const query = {};
     
@@ -32,7 +31,6 @@ router.get('/', (req, res) => {
     const skip = req.query.skip ? parseInt(req.query.skip) : 0;
   
     if (!err) {
-      const db = client.db(MONGODB_DB);
       const cursor = db.collection('kol').find(query);
       cursor.count((err, num) => {
         if (!err) {
@@ -44,15 +42,15 @@ router.get('/', (req, res) => {
                 skip: skip,
                 docs, docs
               }));
-              client.close()
+              db.close()
             } else {
               console.log('search error.');
-              client.close();
+              db.close();
             }
           });
         } else {
           console.log('count error.');
-          client.close();
+          db.close();
         }
       });
     } else {
@@ -66,30 +64,28 @@ router.post('/', (req, res) => {
   const id = req.body.id;
   const item = req.body.item;
 
-  MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, (err, client) => {
-    const db = client.db(MONGODB_DB);
-
+  MongoClient.connect(MONGODB_URI, (err, db) => {
     if (actionType == 2) {
       db.collection('kol').update({
         _id: ObjectId(id)
       }, item, {}, (err, reply) => {
         if (!err) {
           res.status(200).end('处理成功');
-          client.close();
+          db.close();
         } else {
           console.log('update error.');
           console.log(err);
-          client.close();
+          db.close();
         }
       })
     } else if (actionType == 1) {
       db.collection('kol').insertOne(item, (err, reply) => {
         if (!err) {
           res.status(200).end('处理成功');
-          client.close();
+          db.close();
         } else {
           console.log('insert error.');
-          client.close();
+          db.close();
         }
       });
     }
