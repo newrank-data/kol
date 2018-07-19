@@ -221,9 +221,9 @@
                   <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
                   <a v-else href="">空</a>
                 </li>
-                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.iqiyi">
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.sohuvideo">
                   <label>搜狐视频：</label>
-                  <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
+                  <a v-if="focusItem.accounts.sohuvideo.uid" :href="'https://my.tv.sohu.com/user/' + focusItem.accounts.sohuvideo.uid" target="_blank">{{focusItem.accounts.sohuvideo.uid}}</a>
                   <a v-else href="">空</a>
                 </li>
                 <li v-if="focusItem && focusItem.accounts && focusItem.accounts.bilibili">
@@ -465,8 +465,8 @@
           item.accounts.qqvideo = { uid: this.submitQQVideoUid };
         }
 
-        if (this.submitQQVideoUid) {
-          item.accounts.iqiyi = { uid: this.submitQQVideoUid };
+        if (this.submitIqiyiUid) {
+          item.accounts.iqiyi = { uid: this.submitIqiyiUid };
         }
 
         if (this.submitSohuVideoUid) {
