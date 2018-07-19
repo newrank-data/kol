@@ -5,18 +5,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/stylesheets/style.css">
-  <script src="vue.js"></script>
+  <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
   <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
   <title>KOL Library</title>
 </head>
 <body>
   <div class="flex-c">
     <div class="wrapper">
-      <div id="app">
+      <div id="app" style="position: relative;">
+        <div :class="overlayClass">
+          <div class="flex-h">
+            <img class="loading" src="images/loading.gif">
+          </div>
+        </div>
+        <div :class="popupClass" style="font-size: 12px;">
+          <div style="padding: 20px; box-sizing: border-box;">
+            <p>&triangleright;&nbsp;<span class="require">加粗</span> 的项目必填</p>
+            <div class="form-gap">
+              <label class="require">名称：</label>
+              <input type="text" v-model.trim="submitName">
+              <label class="require">类型：</label>
+              <select v-model="submitType">
+                <option value="1">网红</option>
+                <option value="2">明星</option>
+                <option value="3">大V</option>
+              </select>
+              <label class="require">分类：</label>
+              <select v-model="submitCategory">
+                <option value="1">才艺搞笑</option>
+                <option value="2">文化乐活</option>
+                <option value="3">美颜打扮</option>
+                <option value="4">游戏电竞</option>
+              </select>
+              <label class="require">简介：</label>
+              <input type="text" v-model.trim="submitSummary">
+              <label>地区：</label>
+              <input type="text" v-model.trim="submitRegion" placeholder="例如【上海】或【广东-广州】">
+            </div>
+            <div class="form-gap">
+              <label class="require">关键词：</label>
+              <input type="text" v-model.trim="submitKeywords" placeholder="多个用逗号隔开">
+              <label>排除关键词：</label>
+              <input type="text" v-model.trim="submitBypassKeywords" placeholder="多个用逗号隔开">
+              <label>标签：</label>
+              <input type="text" v-model.trim="submitTags" placeholder="多个用逗号隔开">
+            </div>
+            <div class="form-gap">
+              <label class="require">有效性：</label>
+              <select v-model="submitValidity">
+                <option value="true">有效</option>
+                <option value="false">无效</option>
+              </select>
+            </div>
+            <hr>
+            <br>
+            <p>&triangleright;&nbsp;各平台只需要填入对应的&nbsp;<span class="require">uid</span></p>
+            <div class="form-gap">
+              <label>微博：</label>
+              <input type="text" v-model.trim="submitWeiboUid">
+              <label>微信：</label>
+              <input type="text" v-model.trim="submitQQVideoUid">
+            </div>
+            <div class="form-gap">
+              <label>优酷：</label>
+              <input type="text" v-model.trim="submitYoukuUid">
+              <label>腾讯视频：</label>
+              <input type="text" v-model.trim="submitWeixinUid">
+              <label>爱奇艺：</label>
+              <input type="text" v-model.trim="submitIqiyiUid">
+              <label>搜狐视频：</label>
+              <input type="text" v-model.trim="submitSohuVideoUid">
+            </div>
+            <hr>
+            <div class="form-gap">
+              <label>哔哩哔哩：</label>
+              <input type="text" v-model.trim="submitBiliBiliUid">
+              <label>知乎：</label>
+              <input type="text" v-model.trim="submitZhihuUid">
+              <select v-model="submitZhihuType">
+                <option value="1">个人</option>
+                <option value="2">组织</option>
+              </select>
+            </div>
+            <hr>
+            <div class="form-gap">
+              <label>秒拍：</label>
+              <input type="text" v-model.trim="submitMiaopaiUid">
+              <label>美拍：</label>
+              <input type="text" v-model.trim="submitMeipaiUid">
+              <label>YY：</label>
+              <input type="text" v-model.trim="submitYYUid">
+              <label>斗鱼：</label>
+              <input type="text" v-model.trim="submitDouyuUid">
+            </div>
+            <div class="form-gap">
+              <label>虎牙：</label>
+              <input type="text" v-model.trim="submitHuyaUid">
+              <label>花椒：</label>
+              <input type="text" v-model.trim="submitHuajiaoUid">
+              <label>熊猫：</label>
+              <input type="text" v-model.trim="submitPandaUid">
+            </div>
+            <div class="form-gap">
+              <label>一直播：</label>
+              <input type="text" v-model.trim="submitYizhiboUid">
+              <label>映客：</label>
+              <input type="text" v-model.trim="submitInkeUid">
+              <label>龙珠：</label>
+              <input type="text" v-model.trim="submitLongzhuUid">
+            </div>
+            <div style="position: absolute; left: 0; bottom: 20px; width: 100%; text-align: center;">
+              <button class="primary" @click="submit">提交</button>
+              <button @click="cancel">取消</button>
+            </div>
+          </div>
+        </div>
         <div class="flex-h">
-          <div style="position: relative; width: 825px; margin-right: 10px;" class="section">
+          <div class="section" style="position: relative; width: 825px; margin-right: 10px;">
             <div style="padding-bottom: 20px;">
-              <button class="primary">添加</button>
+              <button class="primary" @click="add">添加</button>
               <div style="display: inline-block;">
                 <input type="text" placeholder="名称" v-model.trim="searchName">
                 <select v-model="searchType">
@@ -37,13 +144,13 @@
                   <option value="true">有效</option>
                   <option value="false">无效</option>
                 </select>
-                <button class="primary" @click="search">查询</button>
+                <button class="primary" @click="search(1)">查询</button>
                 <button class="primary" @click="reset">重置</button>
                 <span>|</span>
                 <button disabled>导出</button>
               </div>
             </div>
-            <table>
+            <table v-if="searchResult && searchResult.docs && searchResult.docs.length">
               <thead>
                 <tr style="border: 2px solid #696969;">
                   <th style="width: 40px;" scope="col">#</th>
@@ -74,103 +181,117 @@
               </div>
             </div>
           </div>
-          <div style="width: 325px" class="section">
-            <ul>
-              <li><label>编号: </label>{{focusItem._id}}</li>
-              <li><label>名称: </label>{{focusItem.name}}</li>
-              <li><label>类型: </label>{{types[focusItem.type - 1]}}</li>
-              <li><label>分类: </label>{{categories[focusItem.category - 1]}}</li>
-              <li><label>简介: </label>{{focusItem.summary}}</li>
-              <li><label>有效性: </label>{{focusItem.is_valid ? "有效" : "无效"}}</li>
-            </ul>
-            <hr>
-            <ul>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.weibo">
-                <label>微博：</label>
-                <a v-if="focusItem.accounts.weibo.uid" :href="'https://weibo.com/' + focusItem.accounts.weibo.uid" target="_blank">{{focusItem.accounts.weibo.uid}}</a>
-                <a v-else>空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.weixin">
-                <label>微信：</label>
-                <a v-if="focusItem.accounts.weixin.uid" :href="'https://weixin.sogou.com/weixin?type=1&query=' + focusItem.accounts.weixin.uid" target="_blank">{{focusItem.accounts.weixin.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.youku">
-                <label>优酷：</label>
-                <a v-if="focusItem.accounts.youku.uid" :href="'https://i.youku.com/u/' + focusItem.accounts.youku.uid" target="_blank">{{focusItem.accounts.youku.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.qqvideo">
-                <label>腾讯视频：</label>
-                <a v-if="focusItem.accounts.qqvideo.uid" :href="'https://v.qq.com/vplus/' + focusItem.accounts.qqvideo.uid" target="_blank">{{focusItem.accounts.qqvideo.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.iqiyi">
-                <label>爱奇艺：</label>
-                <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.iqiyi">
-                <label>搜狐视频：</label>
-                <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.bilibili">
-                <label>哔哩哔哩：</label>
-                <a v-if="focusItem.accounts.bilibili.uid" :href="'https://space.bilibili.com/' + focusItem.accounts.bilibili.uid" target="_blank">{{focusItem.accounts.bilibili.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.miaopai">
-                <label>秒拍：</label>
-                <a v-if="focusItem.accounts.miaopai.uid" :href="'http://www.miaopai.com/u/' + focusItem.accounts.miaopai.uid" target="_blank">{{focusItem.accounts.miaopai.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.meipai">
-                <label>美拍：</label>
-                <a v-if="focusItem.accounts.meipai.uid" :href="'https://www.meipai.com/user/' + focusItem.accounts.meipai.uid" target="_blank">{{focusItem.accounts.meipai.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.yy">
-                <label>YY：</label>
-                <a v-if="focusItem.accounts.yy.uid" :href="'https://www.yy.com/u/' + focusItem.accounts.yy.uid" target="_blank">{{focusItem.accounts.yy.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.douyu">
-                <label>斗鱼：</label>
-                <a v-if="focusItem.accounts.douyu.uid" :href="'https://www.douyu.com/' + focusItem.accounts.douyu.uid" target="_blank">{{focusItem.accounts.douyu.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.huya">
-                <label>虎牙：</label>
-                <a v-if="focusItem.accounts.huya.uid" :href="'https://v.huya.com/u/' + focusItem.accounts.huya.uid" target="_blank">{{focusItem.accounts.huya.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.huajiao">
-                <label>花椒：</label>
-                <a v-if="focusItem.accounts.huajiao.uid" :href="'https://www.huajiao.com/user/' + focusItem.accounts.huajiao.uid" target="_blank">{{focusItem.accounts.huajiao.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.yizhibo">
-                <label>一直播：</label>
-                <a v-if="focusItem.accounts.yizhibo.uid" :href="'https://www.yizhibo.com/member/personel/user_info?memberid=' + focusItem.accounts.yizhibo.uid" target="_blank">{{focusItem.accounts.yizhibo.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.inke">
-                <label>映客：</label>
-                <a v-if="focusItem.accounts.inke.uid" :href="'http://www.inke.com/live.html?uid=' + focusItem.accounts.inke.uid" target="_blank">{{focusItem.accounts.inke.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.panda">
-                <label>熊猫：</label>
-                <a v-if="focusItem.accounts.panda.uid" :href="'https://www.panda.tv/' + focusItem.accounts.panda.uid" target="_blank">{{focusItem.accounts.panda.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-              <li v-if="focusItem && focusItem.accounts && focusItem.accounts.longzhu">
-                <label>龙珠：</label>
-                <a v-if="focusItem.accounts.longzhu.uid" :href="'https://star.longzhu.com/' + focusItem.accounts.longzhu.uid" target="_blank">{{focusItem.accounts.longzhu.uid}}</a>
-                <a v-else href="">空</a>
-              </li>
-            </ul>
+          <div style="width: 325px; position: relative;" class="section">
+            <div v-if="searchResult && searchResult.docs && searchResult.docs.length" style="height: 560px; padding-bottom: 60px; overflow-y: auto; box-sizing: border-box;">
+              <ul>
+                <li><label>编号: </label>{{focusItem._id}}</li>
+                <li><label>名称: </label>{{focusItem.name}}</li>
+                <li><label>类型: </label>{{types[focusItem.type - 1]}}</li>
+                <li><label>分类: </label>{{categories[focusItem.category - 1]}}</li>
+                <li v-if="focusItem.summary"><label>简介: </label>{{focusItem.summary}}</li>
+                <li v-if="focusItem.region"><label>地区: </label>{{focusItem.region}}</li>
+                <li><label>关键词: </label>{{focusItem.keywords}}</li>
+                <li v-if="focusItem.bypass_keywords"><label>排除关键词: </label>{{focusItem.bypass_keywords}}</li>
+                <li><label>有效性: </label>{{focusItem.is_valid ? "有效" : "无效"}}</li>
+              </ul>
+              <hr>
+              <ul>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.weibo">
+                  <label>微博：</label>
+                  <a v-if="focusItem.accounts.weibo.uid" :href="'https://weibo.com/' + focusItem.accounts.weibo.uid" target="_blank">{{focusItem.accounts.weibo.uid}}</a>
+                  <a v-else>空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.weixin">
+                  <label>微信：</label>
+                  <a v-if="focusItem.accounts.weixin.uid" :href="'https://weixin.sogou.com/weixin?type=1&query=' + focusItem.accounts.weixin.uid" target="_blank">{{focusItem.accounts.weixin.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.youku">
+                  <label>优酷：</label>
+                  <a v-if="focusItem.accounts.youku.uid" :href="'https://i.youku.com/u/' + focusItem.accounts.youku.uid" target="_blank">{{focusItem.accounts.youku.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.qqvideo">
+                  <label>腾讯视频：</label>
+                  <a v-if="focusItem.accounts.qqvideo.uid" :href="'https://v.qq.com/vplus/' + focusItem.accounts.qqvideo.uid" target="_blank">{{focusItem.accounts.qqvideo.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.iqiyi">
+                  <label>爱奇艺：</label>
+                  <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.iqiyi">
+                  <label>搜狐视频：</label>
+                  <a v-if="focusItem.accounts.iqiyi.uid" :href="'https://www.iqiyi.com/u/' + focusItem.accounts.iqiyi.uid" target="_blank">{{focusItem.accounts.iqiyi.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.bilibili">
+                  <label>哔哩哔哩：</label>
+                  <a v-if="focusItem.accounts.bilibili.uid" :href="'https://space.bilibili.com/' + focusItem.accounts.bilibili.uid" target="_blank">{{focusItem.accounts.bilibili.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.miaopai">
+                  <label>秒拍：</label>
+                  <a v-if="focusItem.accounts.miaopai.uid" :href="'http://www.miaopai.com/u/' + focusItem.accounts.miaopai.uid" target="_blank">{{focusItem.accounts.miaopai.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.meipai">
+                  <label>美拍：</label>
+                  <a v-if="focusItem.accounts.meipai.uid" :href="'https://www.meipai.com/user/' + focusItem.accounts.meipai.uid" target="_blank">{{focusItem.accounts.meipai.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.zhihu">
+                  <label>知乎：</label>
+                  <a v-if="focusItem.accounts.zhihu.uid && focusItem.accounts.zhihu.type == 1" :href="'https://www.zhihu.com/people/' + focusItem.accounts.zhihu.uid" target="_blank">{{focusItem.accounts.zhihu.uid}}</a>
+                  <a v-else-if="focusItem.accounts.zhihu.uid && focusItem.accounts.zhihu.type == 2" :href="'https://www.zhihu.com/org/' + focusItem.accounts.zhihu.uid" target="_blank">{{focusItem.accounts.zhihu.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.yy">
+                  <label>YY：</label>
+                  <a v-if="focusItem.accounts.yy.uid" :href="'https://www.yy.com/u/' + focusItem.accounts.yy.uid" target="_blank">{{focusItem.accounts.yy.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.douyu">
+                  <label>斗鱼：</label>
+                  <a v-if="focusItem.accounts.douyu.uid" :href="'https://www.douyu.com/' + focusItem.accounts.douyu.uid" target="_blank">{{focusItem.accounts.douyu.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.huya">
+                  <label>虎牙：</label>
+                  <a v-if="focusItem.accounts.huya.uid" :href="'https://v.huya.com/u/' + focusItem.accounts.huya.uid" target="_blank">{{focusItem.accounts.huya.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.huajiao">
+                  <label>花椒：</label>
+                  <a v-if="focusItem.accounts.huajiao.uid" :href="'https://www.huajiao.com/user/' + focusItem.accounts.huajiao.uid" target="_blank">{{focusItem.accounts.huajiao.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.yizhibo">
+                  <label>一直播：</label>
+                  <a v-if="focusItem.accounts.yizhibo.uid" :href="'https://www.yizhibo.com/member/personel/user_info?memberid=' + focusItem.accounts.yizhibo.uid" target="_blank">{{focusItem.accounts.yizhibo.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.inke">
+                  <label>映客：</label>
+                  <a v-if="focusItem.accounts.inke.uid" :href="'http://www.inke.com/live.html?uid=' + focusItem.accounts.inke.uid" target="_blank">{{focusItem.accounts.inke.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.panda">
+                  <label>熊猫：</label>
+                  <a v-if="focusItem.accounts.panda.uid" :href="'https://www.panda.tv/' + focusItem.accounts.panda.uid" target="_blank">{{focusItem.accounts.panda.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.longzhu">
+                  <label>龙珠：</label>
+                  <a v-if="focusItem.accounts.longzhu.uid" :href="'https://star.longzhu.com/' + focusItem.accounts.longzhu.uid" target="_blank">{{focusItem.accounts.longzhu.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+              </ul>
+            </div>
+            <div style="position: absolute; left: 0;bottom: 20px; height: 24px; z-index: 2; background-color: #f8f8f8;" class="flex-h">
+              <button :disabled="!focusId" @click="modify">修改</button>
+            </div>
           </div>
         </div>
       </div>
@@ -188,10 +309,42 @@
       searchCategory: '',
       searchValidity: true,
       searchPage: 1,
-      searchResult: [],
+      searchResult: {},
       jumpPage: null,
       foucusIndex: 0,
-      focusItem: {}
+      focusItem: {},
+      focusId: '',
+      loading: false,
+      modaling: false,
+      actionType: 0,
+      submitName: '',
+      submitType: '1',
+      submitCategory: '1',
+      submitRegion: '',
+      submitSummary: '',
+      submitKeywords: '',
+      submitBypassKeywords: '',
+      submitTags: '',
+      submitValidity: true,
+      submitWeiboUid: '',
+      submitWeixinUid: '',
+      submitYoukuUid: '',
+      submitQQVideoUid: '',
+      submitIqiyiUid: '',
+      submitSohuVideoUid: '',
+      submitBiliBiliUid: '',
+      submitZhihuUid: '',
+      submitZhihuType: '1',
+      submitMiaopaiUid: '',
+      submitMeipaiUid: '',
+      submitYYUid: '',
+      submitDouyuUid: '',
+      submitHuyaUid: '',
+      submitHuajiaoUid: '',
+      submitPandaUid: '',
+      submitYizhiboUid: '',
+      submitInkeUid: '',
+      submitLongzhuUid: ''
     },
     computed : {
       searchSkip: function () {
@@ -205,22 +358,37 @@
       },
       pagesNum: function () {
         return Math.ceil(this.searchResult.num / 10);
+      },
+      overlayClass: function () {
+        return this.loading ? ['overlay', 'overlay-half'] : ['overlay', 'overlay-half', 'hiding'];
+      },
+      popupClass: function () {
+        return this.modaling ? ['overlay', 'overlay-full'] : ['overlay', 'overlay-full', 'hiding'];
       }
     },
     methods: {
-      search: function () {
+      search: function (searchType) {
+        this.loading = true;
+        if (searchType == 1) {
+          this.searchPage = 1;
+        }
         const url = `data?name=${this.searchName}&type=${this.searchType}&category=${this.searchCategory}&is_valid=${this.searchValidity}&skip=${this.searchSkip}`;
         
         axios
           .get(url)
           .then(function (response) {
             this.searchResult = response.data;
-            this.focusItem = this.searchResult.docs[0];
             this.foucusIndex = 0;
+            this.focusItem = this.searchResult.docs[0] ? this.searchResult.docs[0] : {};
+            this.focusId = this.searchResult.docs[0] ? this.focusItem._id : '';
+            this.loading = false;
           }.bind(this))
           .catch(function (error) {
             console.log(error);
-          });
+          })
+          .then(function(){
+            this.loading = false;
+          }.bind(this));
       },
       reset: function () {
         this.searchName = '';
@@ -233,12 +401,12 @@
       },
       previousPage: function () {
         this.searchPage -= 1;
-        this.search();
+        this.search(2);
         this.foucusIndex = 0;
       },
       nextPage: function () {
         this.searchPage += 1;
-        this.search();
+        this.search(2);
         this.foucusIndex = 0;
       },
       jumpToPage: function () {
@@ -250,6 +418,250 @@
       changeFocus: function (e) {
         this.foucusIndex = parseInt(e.target.parentNode.dataset['index']);
         this.focusItem = this.searchResult.docs[this.foucusIndex];
+        this.focusId = this.focusItem._id;
+      },
+      add: function () {
+        this.actionType = 1;
+        this.modaling = true;
+      },
+      submit: function () {
+        this.loading = true;
+        const item = {
+          name: this.submitName,
+          type: this.submitType,
+          category: this.submitCategory,
+          summary: this.submitSummary,
+          keywords: this.submitKeywords,
+          is_valid: this.submitValidity
+        };
+
+        if (this.submitRegion) {
+          item.region = this.submitRegion;
+        }
+
+        if (this.submitBypassKeywords) {
+          item.bypass_keywords = this.submitBypassKeywords;
+        }
+
+        if (this.submitTags) {
+          item.tags = this.submitTags;
+        }
+
+        item.accounts = {};
+
+        if (this.submitWeiboUid) {
+          item.accounts.weibo = { uid: this.submitWeiboUid };
+        }
+
+        if (this.submitWeixinUid) {
+          item.accounts.weixin = { uid: this.submitWeixinUid };
+        }
+
+        if (this.submitYoukuUid) {
+          item.accounts.youku = { uid: this.submitYoukuUid };
+        }
+
+        if (this.submitQQVideoUid) {
+          item.accounts.qqvideo = { uid: this.submitQQVideoUid };
+        }
+
+        if (this.submitQQVideoUid) {
+          item.accounts.iqiyi = { uid: this.submitQQVideoUid };
+        }
+
+        if (this.submitSohuVideoUid) {
+          item.accounts.sohuvideo = { uid: this.submitSohuVideoUid };
+        }
+
+        if (this.submitBiliBiliUid) {
+          item.accounts.bilibili = { uid: this.submitBiliBiliUid };
+        }
+
+        if (this.submitZhihuUid) {
+          item.accounts.zhihu = { uid: this.submitZhihuUid, type: this.submitZhihuType};
+        }
+
+        if (this.submitMiaopaiUid) {
+          item.accounts.miaopai = { uid: this.submitMiaopaiUid };
+        }
+
+        if (this.submitMeipaiUid) {
+          item.accounts.meipai = { uid: this.submitMeipaiUid };
+        }
+
+        if (this.submitYYUid) {
+          item.accounts.yy = { uid: this.submitYYUid };
+        }
+
+        if (this.submitDouyuUid) {
+          item.accounts.douyu = { uid: this.submitDouyuUid };
+        }
+
+        if (this.submitHuyaUid) {
+          item.accounts.huya = { uid: this.submitHuyaUid };
+        }
+
+        if (this.submitHuajiaoUid) {
+          item.accounts.huajiao = { uid: this.submitHuajiaoUid };
+        }
+
+        if (this.submitPandaUid) {
+          item.accounts.panda = { uid: this.submitPandaUid };
+        }
+
+        if (this.submitYizhiboUid) {
+          item.accounts.yizhibo = { uid: this.submitYizhiboUid };
+        }
+
+        if (this.submitInkeUid) {
+          item.accounts.inke = { uid: this.submitInkeUid };
+        }
+
+        if (this.submitLongzhuUid) {
+          item.accounts.longzhu = { uid: this.submitLongzhuUid };
+        }
+
+        axios
+          .post('/data', {
+            actionType: this.actionType,
+            id: this.focusId,
+            item: item
+          })
+          .then(function (response) {
+            console.log(response.data);
+          }.bind(this))
+          .catch(function (error) {
+            console.log(error);
+          })
+          .then(function () {
+            this.clear();
+            this.search();
+            this.loading = false;
+            this.modaling = false;
+          }.bind(this))
+      },
+      cancel: function () {
+        this.modaling = false;
+        this.actionType = 0;
+      },
+      modify: function () {
+
+        this.submitName = this.focusItem.name || '';
+        this.submitType = this.focusItem.type || '1';
+        this.submitCategory = this.focusItem.category || '1';
+        this.submitRegion = this.focusItem.region || '';
+        this.submitSummary = this.focusItem.summary || '';
+        this.submitKeywords = this.focusItem.keywords || '';
+        this.submitBypassKeywords = this.focusItem.bypass_keywords || '';
+        this.submitTags = this.focusItem.tags || '';
+        this.submitValidity = this.focusItem.is_valid || true;
+
+        if (this.focusItem.accounts.weibo && this.focusItem.accounts.weibo.uid) {
+          this.submitWeiboUid = this.focusItem.accounts.weibo.uid;
+        }
+
+        if (this.focusItem.accounts.weixin && this.focusItem.accounts.weixin.uid) {
+          this.submitWeixinUid = this.focusItem.accounts.weixin.uid;
+        }
+
+        if (this.focusItem.accounts.youku && this.focusItem.accounts.youku.uid) {
+          this.submitYoukuUid = this.focusItem.accounts.youku.uid;
+        }
+
+        if (this.focusItem.accounts.qqvideo && this.focusItem.accounts.qqvideo.uid) {
+          this.submitQQVideoUid = this.focusItem.accounts.qqvideo.uid;
+        }
+
+        if (this.focusItem.accounts.iqiyi && this.focusItem.accounts.iqiyi.uid) {
+          this.submitIqiyiUid = this.focusItem.accounts.iqiyi.uid;
+        }
+
+        if (this.focusItem.accounts.sohuvideo && this.focusItem.accounts.sohuvideo.uid) {
+          this.submitSohuVideoUid = this.focusItem.accounts.sohuvideo.uid;
+        }
+
+        if (this.focusItem.accounts.bilibili && this.focusItem.accounts.bilibili.uid) {
+          this.submitBiliBiliUid = this.focusItem.accounts.bilibili.uid;
+        }
+
+        if (this.focusItem.accounts.zhihu && this.focusItem.accounts.zhihu.uid) {
+          this.submitZhihuUid = this.focusItem.accounts.zhihu.uid;
+          this.submitZhihuType = this.focusItem.accounts.zhihu.type;
+        }
+
+        if (this.focusItem.accounts.miaopai && this.focusItem.accounts.miaopai.uid) {
+          this.submitMiaopaiUid = this.focusItem.accounts.miaopai.uid;
+        }
+
+        if (this.focusItem.accounts.meipai && this.focusItem.accounts.meipai.uid) {
+          this.submitMeipaiUid = this.focusItem.accounts.meipai.uid;
+        }
+
+        if (this.focusItem.accounts.yy && this.focusItem.accounts.yy.uid) {
+          this.submitYYUid = this.focusItem.accounts.yy.uid;
+        }
+
+        if (this.focusItem.accounts.douyu && this.focusItem.accounts.douyu.uid) {
+          this.submitDouyuUid = this.focusItem.accounts.douyu.uid;
+        }
+
+        if (this.focusItem.accounts.huya && this.focusItem.accounts.huya.uid) {
+          this.submitHuyaUid = this.focusItem.accounts.huya.uid;
+        }
+
+        if (this.focusItem.accounts.huajiao && this.focusItem.accounts.huajiao.uid) {
+          this.submitHuajiaoUid = this.focusItem.accounts.huajiao.uid;
+        }
+
+        if (this.focusItem.accounts.panda && this.focusItem.accounts.panda.uid) {
+          this.submitPandaUid = this.focusItem.accounts.panda.uid;
+        }
+
+        if (this.focusItem.accounts.yizhibo && this.focusItem.accounts.yizhibo.uid) {
+          this.submitYizhiboUid = this.focusItem.accounts.yizhibo.uid;
+        }
+
+        if (this.focusItem.accounts.inke && this.focusItem.accounts.inke.uid) {
+          this.submitInkeUid = this.focusItem.accounts.inke.uid;
+        }
+
+        if (this.focusItem.accounts.longzhu && this.focusItem.accounts.longzhu.uid) {
+          this.submitLongzhuUid = this.focusItem.accounts.longzhu.uid;
+        }
+
+        this.actionType = 2;
+        this.modaling = true;
+      },
+      clear: function () {
+        this.submitName = '',
+        this.submitType = '1',
+        this.submitCategory = '1',
+        this.submitRegion = '',
+        this.submitSummary = '',
+        this.submitKeywords = '',
+        this.submitBypassKeywords = '',
+        this.submitTags = '',
+        this.submitValidity = true,
+        this.submitWeiboUid = '',
+        this.submitWeixinUid = '',
+        this.submitYoukuUid = '',
+        this.submitQQVideoUid = '',
+        this.submitIqiyiUid = '',
+        this.submitSohuVideoUid = '',
+        this.submitBiliBiliUid = '',
+        this.submitZhihuUid = '',
+        this.submitZhihuType = '1',
+        this.submitMiaopaiUid = '',
+        this.submitMeipaiUid = '',
+        this.submitYYUid = '',
+        this.submitDouyuUid = '',
+        this.submitHuyaUid = '',
+        this.submitHuajiaoUid = '',
+        this.submitPandaUid = '',
+        this.submitYizhiboUid = '',
+        this.submitInkeUid = '',
+        this.submitLongzhuUid = '',
+        this.actionType = 0
       }
     },
     mounted: function () {
