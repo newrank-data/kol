@@ -6,7 +6,7 @@ const ObjectId = require('mongodb').ObjectId;
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB;
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   
   MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, (err, client) => {
 
@@ -46,11 +46,13 @@ router.get('/', (req, res, next) => {
               }));
               client.close()
             } else {
-              next();
+              console.log('search error.');
+              client.close();
             }
           });
         } else {
-          next();
+          console.log('count error.');
+          client.close();
         }
       });
     } else {
@@ -59,7 +61,7 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
   const actionType = req.body.actionType;
   const id = req.body.id;
   const item = req.body.item;
@@ -68,14 +70,16 @@ router.post('/', (req, res, next) => {
     const db = client.db(MONGODB_DB);
 
     if (actionType == 2) {
-      db.collection('kol').updateOne({
-        _id: new ObjectId(id)
-      }, item, (err, reply) => {
+      db.collection('kol').update({
+        _id: ObjectId(id)
+      }, item, {}, (err, reply) => {
         if (!err) {
           res.status(200).end('处理成功');
           client.close();
         } else {
-          next();
+          console.log('update error.');
+          console.log(err);
+          client.close();
         }
       })
     } else if (actionType == 1) {
@@ -84,16 +88,12 @@ router.post('/', (req, res, next) => {
           res.status(200).end('处理成功');
           client.close();
         } else {
-          next();
+          console.log('insert error.');
+          client.close();
         }
       });
     }
   });
-});
-
-router.use((req, res) => {
-  res.status(500).end('处理失败');
-  client.close();
 });
 
 module.exports = router;
