@@ -133,6 +133,25 @@ label {
   color: #696969;
 }
 
+.tips {
+  position: relative;
+}
+
+.tips::before {
+  content: '?';
+  position: absolute;
+  top: -14px;
+  left: -8px;
+  background-color: #000000;
+  color: #ffffff;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  font-size: 9px;
+  line-height: 12px;
+  text-align: center;
+}
+
 hr {
   border: 0;
   border-bottom: 1px dashed #d2d2d2;

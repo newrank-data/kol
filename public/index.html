@@ -19,8 +19,14 @@
           </div>
         </div>
         <div :class="popupClass" style="font-size: 12px;">
+          <div :class="hintClass" style="position: absolute; top: -36px;width: 100%;height: 32px;background-color: #ffffff;border-radius: 5px;">
+            <div class="flex-h">
+              <p>{{hintText}}</p>
+            </div>
+          </div>
           <div style="padding: 20px; box-sizing: border-box;">
-            <p>&triangleright;&nbsp;<span class="require">加粗</span> 的项目必填</p>
+            <p>&triangleright;&nbsp;<span class="require">加粗</span> 的项目必填，各平台只需要填入对应的&nbsp;<span class="require">uid</span>&nbsp;，点击&nbsp;<span style="display:inline-block; text-align: center; width: 12px; height: 12px; line-height: 12px; font-size: 9px; background-color: #000000; color: #ffffff; border-radius: 5px;">?</span>&nbsp;可查看详细说明，<strong>格式不对将无法提交</strong></p>
+            <br>
             <div class="form-gap">
               <label class="require">名称：</label>
               <input type="text" v-model.trim="submitName">
@@ -39,8 +45,8 @@
               </select>
               <label class="require">简介：</label>
               <input type="text" v-model.trim="submitSummary">
-              <label>地区：</label>
-              <input type="text" v-model.trim="submitRegion" placeholder="例如【上海】或【广东-广州】">
+              <label class="tips" data-hint="格式为“地区” 或 “省份-城市” 或 “直辖市-区”（上海，海外、广东-广州、北京-朝阳区），直接填入微博账号上显示的位置信息即可" @click="showHint">地区：</label>
+              <input type="text" v-model.trim="submitRegion">
             </div>
             <div class="form-gap">
               <label class="require">关键词：</label>
@@ -59,28 +65,33 @@
             </div>
             <hr>
             <br>
-            <p>&triangleright;&nbsp;各平台只需要填入对应的&nbsp;<span class="require">uid</span></p>
             <div class="form-gap">
-              <label>微博：</label>
+              <label class="tips" @click="showHint" data-hint="格式为 10 位数字（2714280233），点击博主任意一篇博文的发布时间跳转到博文详情页，在地址栏 weibo.com/ 之后">微博：</label>
               <input type="text" v-model.trim="submitWeiboUid">
-              <label>微信：</label>
+              <label class="tips" @click="showHint" data-hint="格式为以 gh_ 开头 + 12 位数字/字母的原始微信号（gh_278babc9c878），或由字母/数字/下划线组成的自定义微信号（acui19930427）">微信：</label>
               <input type="text" v-model.trim="submitWeixinUid">
             </div>
             <div class="form-gap">
-              <label>优酷：</label>
+              <label class="tips" @click="showHint" data-hint="格式为以 U 开头的 13~15 位字母/数字组合（UMzI0NDU3NDAxMg），点击任一视频下方的作者跳转到频道页，在地址栏中 i.youku.com/i/ 和 == 之间">优酷：</label>
               <input type="text" v-model.trim="submitYoukuUid">
-              <label>腾讯视频：</label>
+              <label class="tips" @click="showHint" data-hint="格式为 32 位字母/数字组合的原始 id （cf55f2250f5e7fe1bb70c7e955ac4366）， 或自定义的 id（papijiang），点击任一视频下方的作者跳转到频道页，在地址栏 v.qq.com/vplus/ 之后">腾讯视频：</label>
               <input type="text" v-model.trim="submitQQVideoUid">
-              <label>爱奇艺：</label>
+              <label class="tips" @click="showHint" data-hint="格式为 10 位数字（1123353548），点击任一视频下方的作者跳转到频道页，在地址栏 www.iqiyi.com/u/ 之后">爱奇艺：</label>
               <input type="text" v-model.trim="submitIqiyiUid">
-              <label>搜狐视频：</label>
+              <label class="tips" @click="showHint" data-hint="格式为 9 位数字（304268132）或自定义 id（xiaoti），点击任一视频下方的作者跳转到频道页，在地址栏 my.tv.sohu.com/user/ 之后">搜狐视频：</label>
               <input type="text" v-model.trim="submitSohuVideoUid">
             </div>
             <hr>
             <div class="form-gap">
-              <label>哔哩哔哩：</label>
+              <label class="tips" @click="showHint" data-hint="格式为 6 位以上数字（328011），进入抖音App，点击个人主页右上角并以链接形式分享，PC 上打开后在 www.amemv.com/share/user/ 之后">抖音：</label>
+              <input type="text" v-model.trim="submitDouyinUid">
+              <label class="tips" @click="showHint" data-hint="格式为 24 位数字（5663331d50c4b42a8e191a51），进入小红书App，点击个人主页右上角并以链接形式分享， PC 上打开后在 www.xiaohongshu.com/user/profile/ 之后">小红书：</label>
+              <input type="text" v-model.trim="submitXiaohongshuUid">
+            </div>
+            <div class="form-gap">
+              <label class="tips" @click="showHint" data-hint="格式为 7 位以上数字（10133382），点击任一视频下方的作者跳转到个人空间页，在地址栏 space.bilibili.com/ 之后">哔哩哔哩：</label>
               <input type="text" v-model.trim="submitBiliBiliUid">
-              <label>知乎：</label>
+              <label class="tips" @click="showHint" data-hint="格式为字母/数字/横杠的组合（wang-yi-kan-ke），点击任一回答上方的作者跳转到主页，在地址栏 www.zhihu.com/people/（个人） 或 www.zhihu.com/org/（组织） 与 /activities 之间">知乎：</label>
               <input type="text" v-model.trim="submitZhihuUid">
               <select v-model="submitZhihuType">
                 <option value="1">个人</option>
@@ -226,9 +237,25 @@
                   <a v-if="focusItem.accounts.sohuvideo.uid" :href="'https://my.tv.sohu.com/user/' + focusItem.accounts.sohuvideo.uid" target="_blank">{{focusItem.accounts.sohuvideo.uid}}</a>
                   <a v-else href="">空</a>
                 </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.douyin">
+                  <label>抖音：</label>
+                  <a v-if="focusItem.accounts.douyin.uid" :href="'https://www.douyin.com/share/user/' + focusItem.accounts.douyin.uid" target="_blank">{{focusItem.accounts.douyin.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.xiaohongshu">
+                  <label>小红书：</label>
+                  <a v-if="focusItem.accounts.xiaohongshu.uid" :href="'https://www.xiaohongshu.com/user/profile/' + focusItem.accounts.xiaohongshu.uid" target="_blank">{{focusItem.accounts.xiaohongshu.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
                 <li v-if="focusItem && focusItem.accounts && focusItem.accounts.bilibili">
                   <label>哔哩哔哩：</label>
                   <a v-if="focusItem.accounts.bilibili.uid" :href="'https://space.bilibili.com/' + focusItem.accounts.bilibili.uid" target="_blank">{{focusItem.accounts.bilibili.uid}}</a>
+                  <a v-else href="">空</a>
+                </li>
+                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.zhihu">
+                  <label>知乎：</label>
+                  <a v-if="focusItem.accounts.zhihu.uid && focusItem.accounts.zhihu.type == 1" :href="'https://www.zhihu.com/people/' + focusItem.accounts.zhihu.uid" target="_blank">{{focusItem.accounts.zhihu.uid}}</a>
+                  <a v-else-if="focusItem.accounts.zhihu.uid && focusItem.accounts.zhihu.type == 2" :href="'https://www.zhihu.com/org/' + focusItem.accounts.zhihu.uid" target="_blank">{{focusItem.accounts.zhihu.uid}}</a>
                   <a v-else href="">空</a>
                 </li>
                 <li v-if="focusItem && focusItem.accounts && focusItem.accounts.miaopai">
@@ -239,12 +266,6 @@
                 <li v-if="focusItem && focusItem.accounts && focusItem.accounts.meipai">
                   <label>美拍：</label>
                   <a v-if="focusItem.accounts.meipai.uid" :href="'https://www.meipai.com/user/' + focusItem.accounts.meipai.uid" target="_blank">{{focusItem.accounts.meipai.uid}}</a>
-                  <a v-else href="">空</a>
-                </li>
-                <li v-if="focusItem && focusItem.accounts && focusItem.accounts.zhihu">
-                  <label>知乎：</label>
-                  <a v-if="focusItem.accounts.zhihu.uid && focusItem.accounts.zhihu.type == 1" :href="'https://www.zhihu.com/people/' + focusItem.accounts.zhihu.uid" target="_blank">{{focusItem.accounts.zhihu.uid}}</a>
-                  <a v-else-if="focusItem.accounts.zhihu.uid && focusItem.accounts.zhihu.type == 2" :href="'https://www.zhihu.com/org/' + focusItem.accounts.zhihu.uid" target="_blank">{{focusItem.accounts.zhihu.uid}}</a>
                   <a v-else href="">空</a>
                 </li>
                 <li v-if="focusItem && focusItem.accounts && focusItem.accounts.yy">
@@ -316,6 +337,8 @@
       focusId: '',
       loading: false,
       modaling: false,
+      hinting: false,
+      hintText: '',
       actionType: 0,
       submitName: '',
       submitType: '1',
@@ -332,6 +355,8 @@
       submitQQVideoUid: '',
       submitIqiyiUid: '',
       submitSohuVideoUid: '',
+      submitDouyinUid: '',
+      submitXiaohongshuUid: '',
       submitBiliBiliUid: '',
       submitZhihuUid: '',
       submitZhihuType: '1',
@@ -364,6 +389,9 @@
       },
       popupClass: function () {
         return this.modaling ? ['overlay', 'overlay-full'] : ['overlay', 'overlay-full', 'hiding'];
+      },
+      hintClass: function () {
+        return this.hinting ? '' : 'hiding';
       }
     },
     methods: {
@@ -473,6 +501,14 @@
           item.accounts.sohuvideo = { uid: this.submitSohuVideoUid };
         }
 
+        if (this.submitDouyinUid) {
+          item.accounts.douyin = { uid: this.submitDouyinUid };
+        }
+
+        if (this.submitXiaohongshuUid) {
+          item.accounts.xiaohongshu = { uid: this.submitXiaohongshuUid };
+        }
+
         if (this.submitBiliBiliUid) {
           item.accounts.bilibili = { uid: this.submitBiliBiliUid };
         }
@@ -538,11 +574,13 @@
             this.search();
             this.loading = false;
             this.modaling = false;
+            this.hinting = false;
           }.bind(this))
       },
       cancel: function () {
         this.clear();
         this.modaling = false;
+        this.hinting = false;
         this.actionType = 0;
       },
       modify: function () {
@@ -579,6 +617,14 @@
 
         if (this.focusItem.accounts.sohuvideo && this.focusItem.accounts.sohuvideo.uid) {
           this.submitSohuVideoUid = this.focusItem.accounts.sohuvideo.uid;
+        }
+
+        if (this.focusItem.accounts.douyin && this.focusItem.accounts.douyin.uid) {
+          this.submitDouyinUid = this.focusItem.accounts.douyin.uid;
+        }
+        
+        if (this.focusItem.accounts.xiaohongshu && this.focusItem.accounts.xiaohongshu.uid) {
+          this.submitXiaohongshuUid = this.focusItem.accounts.xiaohongshu.uid;
         }
 
         if (this.focusItem.accounts.bilibili && this.focusItem.accounts.bilibili.uid) {
@@ -649,6 +695,8 @@
         this.submitQQVideoUid = '',
         this.submitIqiyiUid = '',
         this.submitSohuVideoUid = '',
+        this.submitDouyinUid = '',
+        this.submitXiaohongshuUid = '',
         this.submitBiliBiliUid = '',
         this.submitZhihuUid = '',
         this.submitZhihuType = '1',
@@ -663,6 +711,10 @@
         this.submitInkeUid = '',
         this.submitLongzhuUid = '',
         this.actionType = 0
+      },
+      showHint: function (e) {
+        this.hintText = e.target.dataset.hint;
+        this.hinting = true;
       }
     },
     mounted: function () {
