@@ -28,6 +28,19 @@ body {
   height: 100%;
 }
 
+.flex-v {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flex-v button {
+  margin-left: 6px;
+  margin-bottom: 12px;
+}
+
 .section {
   box-sizing: border-box;
   background-color: #f8f8f8;

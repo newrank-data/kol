@@ -155,10 +155,10 @@
                   <option value="true">有效</option>
                   <option value="false">无效</option>
                 </select>
-                <button class="primary" @click="search(1)">查询</button>
-                <button class="primary" @click="reset">重置</button>
+                <button :disabled="outputing" @click="search(1)">查询</button>
+                <button :disabled="outputing" @click="reset">重置</button>
                 <span>|</span>
-                <button disabled>导出</button>
+                <button :disabled="!focusId" @click="showOutput">导出</button>
               </div>
             </div>
             <table v-if="searchResult && searchResult.docs && searchResult.docs.length">
@@ -192,7 +192,27 @@
               </div>
             </div>
           </div>
+
           <div style="width: 325px; position: relative;" class="section">
+            <div :class="outputClass" style="position: absolute; width: 285px; height: 560px; box-sizing: border-box; z-index: 3; background-color: #f8f8f8;">
+              <div class="flex-v">
+                <div style="font-size: 12px;">
+                  <p>点击以下按钮，即可导出符合左侧筛选条件并包含对应字段的帐号，包含<strong>编号</strong>、<strong>名称</strong><strong>和对应字段的值</strong>：</p>
+                  <button @click="download" data-field="weibo">微博</button>
+                  <button @click="download" data-field="weixin">微信</button>
+                  <button @click="download" data-field="youku">优酷</button>
+                  <button @click="download" data-field="qqvideo">腾讯视频</button>
+                  <button @click="download" data-field="iqiyi">爱奇异</button>
+                  <button @click="download" data-field="sohuvideo">搜狐视频</button>
+                  <button @click="download" data-field="douyin">抖音</button>
+                  <button @click="download" data-field="xiaohongshu">小红书</button>
+                  <br>
+                  <hr>
+                  <button @click="download" data-field="keywords">关键词</button>
+                </div>
+                <button @click="hideOutput" style="margin: 0 0 0 104px; ">关闭</button>
+              </div>
+            </div>
             <div v-if="searchResult && searchResult.docs && searchResult.docs.length" style="height: 560px; padding-bottom: 60px; overflow-y: auto; box-sizing: border-box;">
               <ul>
                 <li><label>编号: </label>{{focusItem._id}}</li>
@@ -338,6 +358,7 @@
       loading: false,
       modaling: false,
       hinting: false,
+      outputing: false,
       hintText: '',
       actionType: 0,
       submitName: '',
@@ -369,7 +390,7 @@
       submitPandaUid: '',
       submitYizhiboUid: '',
       submitInkeUid: '',
-      submitLongzhuUid: ''
+      submitLongzhuUid: '',
     },
     computed : {
       searchSkip: function () {
@@ -392,6 +413,9 @@
       },
       hintClass: function () {
         return this.hinting ? '' : 'hiding';
+      },
+      outputClass: function () {
+        return this.outputing ? [] : ['hiding'];
       }
     },
     methods: {
@@ -715,6 +739,31 @@
       showHint: function (e) {
         this.hintText = e.target.dataset.hint;
         this.hinting = true;
+      },
+      showOutput: function () {
+        this.outputing = true;
+      },
+      hideOutput: function () {
+        this.outputing = false;
+      },
+      download: function (e) {
+        const field = e.target.dataset.field;
+        const url = `/data?name=${this.searchName}&type=${this.searchType}&category=${this.searchCategory}&is_valid=${this.searchValidity}&limit=${this.searchResult.num}&field=${field}`;
+        
+        fetch(url)
+          .then(res => {
+            if (res.status == 200) {
+                const a = document.createElement('a');
+                const location = res.url;
+                const filename = `${field}.csv`;
+                a.href = location;
+                a.download = filename;
+                a.click();
+
+            } else if (res.status == 204) {
+              alert('包含该字段的帐号数量为 0');
+            }
+          });
       }
     },
     mounted: function () {
