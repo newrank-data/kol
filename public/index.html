@@ -747,11 +747,16 @@
         this.outputing = false;
       },
       download: function (e) {
-        const field = e.target.dataset.field;
+        const target = e.target;
+        target.disabled = true;
+        const oriText = target.innerText;
+        target.innerText = '处理中...';
+
+        const field = target.dataset.field;
         const url = `/data?name=${this.searchName}&type=${this.searchType}&category=${this.searchCategory}&is_valid=${this.searchValidity}&limit=${this.searchResult.num}&field=${field}`;
         
         fetch(url)
-          .then(res => {
+          .then(function (res) {
             if (res.status == 200) {
                 const a = document.createElement('a');
                 const location = res.url;
@@ -763,6 +768,9 @@
             } else if (res.status == 204) {
               alert('包含该字段的帐号数量为 0');
             }
+
+            target.innerText = oriText;
+            target.disabled = false;
           });
       }
     },
