@@ -769,8 +769,11 @@
               alert('包含该字段的帐号数量为 0');
             }
 
-            target.innerText = oriText;
-            target.disabled = false;
+            setTimeout(() => {
+              target.innerText = oriText;
+              target.disabled = false;
+            }, 5000);
+
           });
       }
     },
